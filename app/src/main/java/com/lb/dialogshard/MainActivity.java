@@ -8,10 +8,10 @@ import android.content.DialogInterface.OnClickListener;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AlertDialog.Builder;
@@ -30,31 +30,50 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        findViewById(R.id.useDialogFragmentButton).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.showDialogFragmentButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                if (VERSION.SDK_INT >= VERSION_CODES.M) {
+                new TestDialogFragment().show(getSupportFragmentManager(), TestDialogFragment.TAG);
+            }
+        });
+        findViewById(R.id.showDialogShardButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                new TestDialogShard().show(MainActivity.this, RESHOW_DIALOG_UPON_CONFIGURATION_CHANGE);
+            }
+        });
+        if (VERSION.SDK_INT >= VERSION_CODES.M) {
+            findViewById(R.id.showPermissionIssueOnDialogFragmentButton).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(final View view) {
                     Toast.makeText(MainActivity.this, "Please choose to deny the permission", Toast.LENGTH_SHORT).show();
-                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{permission.READ_EXTERNAL_STORAGE, permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_DIALOG_FRAGMENT);
-                } else {
-                    Toast.makeText(MainActivity.this, "Cannot demonstrate issue pre-M versions of Android", Toast.LENGTH_SHORT).show();
-                    new RequestPermissionsDialogFragment().show(getSupportFragmentManager(), RequestPermissionsDialogFragment.TAG);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{permission.READ_EXTERNAL_STORAGE, permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_DIALOG_FRAGMENT);
+                        }
+                    },1000);
                 }
+            });
+            findViewById(R.id.showNoPermissionIssueOnDialogShardButton).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(final View view) {
+                    Toast.makeText(MainActivity.this, "Please choose to deny the permission", Toast.LENGTH_SHORT).show();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{permission.READ_EXTERNAL_STORAGE, permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_DIALOG_SHARD);
+                        }
+                    },1000);
 
-            }
-        });
-        findViewById(R.id.useDialogShardButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                if (VERSION.SDK_INT >= VERSION_CODES.M) {
-                    Toast.makeText(MainActivity.this, "Please choose to deny the permission", Toast.LENGTH_SHORT).show();
-                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{permission.READ_EXTERNAL_STORAGE, permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_DIALOG_SHARD);
-                } else {
-                    Toast.makeText(MainActivity.this, "Cannot demonstrate issue pre-M versions of Android", Toast.LENGTH_SHORT).show();
-                    new RequestPermissionsDialogShard().show(MainActivity.this, RESHOW_DIALOG_UPON_CONFIGURATION_CHANGE);
                 }
-            }
-        });
+            });
+        } else {
+            findViewById(R.id.showPermissionIssueOnDialogFragmentButton).setEnabled(false);
+            findViewById(R.id.showNoPermissionIssueOnDialogShardButton).setEnabled(false);
+        }
+
+
     }
 
     @Override
@@ -62,26 +81,27 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case REQUEST_CODE_DIALOG_FRAGMENT:
-                new RequestPermissionsDialogFragment().show(getSupportFragmentManager(), RequestPermissionsDialogFragment.TAG);
+                new TestDialogFragment().show(getSupportFragmentManager(), TestDialogFragment.TAG);
                 break;
             case REQUEST_CODE_DIALOG_SHARD:
-                new RequestPermissionsDialogShard().show(this, RESHOW_DIALOG_UPON_CONFIGURATION_CHANGE);
+                new TestDialogShard().show(MainActivity.this, RESHOW_DIALOG_UPON_CONFIGURATION_CHANGE);
                 break;
         }
     }
 
-    public static class RequestPermissionsDialogFragment extends DialogFragment {
-        public static final String TAG = RequestPermissionsDialogFragment.class.getCanonicalName();
+    public static class TestDialogFragment extends android.support.v4.app.DialogFragment {
+        public static final String TAG = TestDialogFragment.class.getCanonicalName();
 
-        public RequestPermissionsDialogFragment() {
+        public TestDialogFragment() {
         }
 
         @Override
         public void onCreate(@Nullable final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            setRetainInstance(RESHOW_DIALOG_UPON_CONFIGURATION_CHANGE);
+            setRetainInstance(!RESHOW_DIALOG_UPON_CONFIGURATION_CHANGE);
         }
 
+        @NonNull
         @Override
         public Dialog onCreateDialog(final Bundle savedInstanceState) {
             final FragmentActivity activity = getActivity();
@@ -98,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static class RequestPermissionsDialogShard extends DialogShard {
+    public static class TestDialogShard extends DialogShard {
 
         @Override
         public Dialog onCreateDialog(final Activity activity, final Bundle savedInstanceState) {
