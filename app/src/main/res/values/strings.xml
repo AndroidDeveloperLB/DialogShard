@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">DialogShard</string>
+    <string name="demo_desc">This sample shows that DialogShard can work just as well as DialogFragment.
+\n\nIn addition, it shows that on Android M and above, as opposed to DialogFragment, DialogShard will not cause crashes on certain cases, such as the one here, where you get the result of permission confirmation.</string>
 </resources>

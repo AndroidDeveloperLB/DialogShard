@@ -13,14 +13,19 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.lb.dialogshard.MainActivity">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/demo_desc"/>
+
     <Button
-        android:id="@+id/useDialogFragmentButton"
+        android:id="@+id/useDialogFragmentButton" android:textAllCaps="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="use DialogFragment"/>
 
     <Button
-        android:id="@+id/useDialogShardButton"
+        android:id="@+id/useDialogShardButton" android:textAllCaps="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="use DialogShard"/>
