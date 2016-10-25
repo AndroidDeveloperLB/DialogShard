@@ -1,7 +1,7 @@
 # DialogShard
 An alternative to DialogFragment, that's intended to overcome fragments exceptions
 
-It has the advantages of a DialogFragment, without the disadvantages of it.
+It has the advantages of a DialogFragment by having about the same lifecycle, without the disadvantages of it, by not extending from Fragment at all.
 
 Why use it?
 -----------
