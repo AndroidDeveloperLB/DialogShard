@@ -8,6 +8,7 @@ import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public abstract class DialogShard implements ActivityLifecycleCallbacks {
     private boolean _enableShowAlsoAfterConfigurationChange;
@@ -63,6 +64,14 @@ public abstract class DialogShard implements ActivityLifecycleCallbacks {
 
     @Override
     public void onActivitySaveInstanceState(final Activity activity, final Bundle bundle) {
+    }
+
+    /**
+     * returns the currently activity that has shown the dialog, but if there isn't any yet, returns null
+     */
+    @Nullable
+    public Activity getActivity() {
+        return _activity;
     }
 
     @Override
