@@ -42,7 +42,7 @@
             android:id="@+id/showPermissionIssueOnDialogFragmentButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="show permission issue using DialogFragment"
+            android:text="(Try to) Show permission issue using DialogFragment (occurs on some devices)"
             android:textAllCaps="false"/>
 
         <Button
